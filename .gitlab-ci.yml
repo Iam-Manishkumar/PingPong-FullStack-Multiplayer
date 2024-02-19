@@ -21,3 +21,12 @@ unit_testing:
     - npm install --save-dev supertest mocha
     - npm install -y
     - npm test
+
+#Building the image
+# Publish to GitLab Package Registry
+# Dockerize
+docker_build:
+  image: docker
+  services:
+    - docker:24.0.6-dind
+
