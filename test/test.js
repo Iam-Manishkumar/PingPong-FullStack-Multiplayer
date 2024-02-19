@@ -1,7 +1,7 @@
 const request = require('supertest');
 const assert = require('assert');
 const app = require('../index'); // Adjust the path accordingly
-const Game = require('../public/staticGame'); // Adjust the path accordingly
+const Game = require('../public/StaticGame'); // Adjust the path accordingly
 
 describe('Ping Pong Game', () => {
   describe('GET /', () => {
