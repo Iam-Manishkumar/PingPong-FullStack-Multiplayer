@@ -2,7 +2,7 @@ image: node:latest
 
 stages:
   - unit-test
-  - build
+  - build-the-image
 
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
