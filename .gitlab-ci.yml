@@ -19,5 +19,5 @@ unit_testing:
   script:
     - echo "Running unit tests on the application..."
     - npm install --save-dev supertest mocha
-    - npm install
+    - npm install -y
     - npm test
