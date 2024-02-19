@@ -1,5 +1,5 @@
 
-FROM node:latest
+FROM node:20.11.1-bullseye-slim
 
 # Set working directory
 WORKDIR /project
@@ -18,10 +18,11 @@ COPY package.json /project
 RUN npm install -y
 
 # Copy the rest of the application code
-COPY . /project
+COPY --chown=node:node . /project
 
 # Expose port 80 (assuming your application listens on port 80)
 EXPOSE 80
 
 # Define the command to run your application
+USER node
 CMD ./start.sh

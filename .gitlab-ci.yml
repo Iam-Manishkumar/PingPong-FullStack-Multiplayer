@@ -1,5 +1,4 @@
-image: node:latest
-
+image: node:20.11.1-bullseye-slim
 stages:
   - dependencies
   - unit-test
