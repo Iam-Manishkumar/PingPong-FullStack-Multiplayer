@@ -1,0 +1,6 @@
+image: node:latest
+
+stages:
+  - test
+  - build
+  
