@@ -29,7 +29,7 @@ docker_build:
   image: docker
   services:
     - docker:24.0.6-dind
-  stage: build
+  stage: build-the-image
   script:
     - echo "Building Docker image..."
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
