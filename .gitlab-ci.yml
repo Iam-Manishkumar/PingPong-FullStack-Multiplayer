@@ -12,13 +12,15 @@ variables:
 services:
   - docker:24.0.6-dind
 
-#Performing Continous Integration
-
 #Installation of dependencies
 Install-Dependency:
   stage: dependencies
+  script:
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
 
-# CI Stage
+#Performing Continous Integration
+#Unit-Tests
 unit_testing:
   stage: unit-test
   script:
