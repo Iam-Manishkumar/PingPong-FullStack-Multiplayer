@@ -18,6 +18,7 @@ Install-Dependency:
   script:
     - npm install supertest mocha --save-dev
     - npm install jsdom --save-dev
+    - npm install -y
 
 #Performing Continous Integration
 #Unit-Tests
@@ -25,13 +26,10 @@ unit_testing:
   stage: unit-test
   script:
     - echo "Running unit tests on the application..."
-    - npm install --save-dev supertest mocha
-    - npm install -y
     - npm test
 
 #Building the image
-# Publish to GitLab Package Registry
-# Dockerize
+#Publish to GitLab Package Registry
 docker_build:
   image: docker
   services:
