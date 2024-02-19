@@ -1,5 +1,5 @@
 {
-	"name": "fullstack-multiplayer-pingpong",
+	"name": "pingpong-fullstack-multiplayer",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -10,7 +10,7 @@
 	},
 	"repository": {
 	  "type": "git",
-	  "url": "git+https://github.com/Iam-Manishkumar/FullStack-Multiplayer-PingPong.git"
+	  "url": "git+https://github.com/Iam-Manishkumar/PingPong-FullStack-Multiplayer"
 	},
 	"author": "Manish Kumar",
 	"license": "ISC",
@@ -26,6 +26,6 @@
 	  "mocha": "^9.2.2",
 	  "supertest": "^6.3.4"
 	},
-	"homepage": "https://github.com/Iam-Manishkumar/FullStack-Multiplayer-PingPong#readme"
+	"homepage": "https://github.com/Iam-Manishkumar/PingPong-FullStack-Multiplayer#readme"
   }
   
