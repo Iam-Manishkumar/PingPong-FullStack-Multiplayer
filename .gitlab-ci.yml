@@ -1,7 +1,7 @@
 image: node:latest
 
 stages:
-  - test
+  - unit-test
   - build
 
 variables:
@@ -10,3 +10,14 @@ variables:
 
 services:
   - docker:24.0.6-dind
+
+#Performing Continous Integration
+
+# CI Stage
+unit_testing:
+  stage: unit-test
+  script:
+    - echo "Running unit tests on the application..."
+    - npm install --save-dev supertest mocha
+    - npm install
+    - npm test
