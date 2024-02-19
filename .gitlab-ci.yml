@@ -1,7 +1,7 @@
 image: node:latest
 
 stages:
-  - Dependencies
+  - dependencies
   - unit-test
   - build-the-image
 
@@ -15,6 +15,8 @@ services:
 #Performing Continous Integration
 
 #Installation of dependencies
+Install-Dependency:
+  stage: dependencies
 
 # CI Stage
 unit_testing:
