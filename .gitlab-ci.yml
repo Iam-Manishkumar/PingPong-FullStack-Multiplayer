@@ -21,6 +21,7 @@ dependencies:
 #Performing Continous Integration
 #Unit-Tests
 unit_testing:
+  needs: [dependencies] 
   stage: unit-test
   script:
     - echo "Running unit tests on the application..."
