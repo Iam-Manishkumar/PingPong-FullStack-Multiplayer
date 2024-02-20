@@ -1,14 +1,6 @@
-variables:
-  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning/trivy:6
-  TARGET_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
 
-image: docker:latest
-
-update-scanner-image:
-  services:
-    - docker:dind
-  script:
-    - docker pull $SOURCE_IMAGE
-    - docker tag $SOURCE_IMAGE $TARGET_IMAGE
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
-    - docker push $TARGET_IMAGE
+include:
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
