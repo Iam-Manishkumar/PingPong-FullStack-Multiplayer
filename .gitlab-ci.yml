@@ -1,7 +1,6 @@
 image: node:20.11.1-bullseye-slim
 stages:
-
-  - test
+  - build-the-image
 
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -11,19 +10,23 @@ services:
   - docker:24.0.6-dind
 
 
-trivy:
-  stage: test
-  image: docker:stable-git
-  before_script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build -t $CONTAINER_IMAGE . 
-    - wget https://github.com/aquasecurity/trivy/releases/download/v0.49.1/trivy_0.49.1_Linux-64bit.tar.gz
-    - tar zxvf trivy_0.49.1_Linux-64bit.tar.gz
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
+docker_build:
+  image: docker
   services:
-    - docker:stable-dind
+    - docker:24.0.6-dind
+  stage: build-the-image
   script:
-    - ./trivy image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG --exit-code 0 --severity HIGH --no-progress trivy-ci-test
-    - ./trivy image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG —exit-code 1 — severity CRITICAL — no-progress trivy-ci-test  
+    - echo "Building Docker image..."
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CONTAINER_IMAGE .
+    - echo "Pushing the image to GitLab Package Registry"
+    - docker push $CONTAINER_IMAGE
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        echo "Tagging Docker image with Git tag..."
+        docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+        docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      fi   
+
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
