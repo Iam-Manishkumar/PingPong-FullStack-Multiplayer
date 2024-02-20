@@ -1,5 +1,6 @@
 image: node:20.11.1-bullseye-slim
 stages:
+  - unit-test
   - build-the-image
   - test
 
@@ -10,8 +11,27 @@ variables:
 services:
   - docker:24.0.6-dind
 
+dependencies:
+  stage: unit-test
+  script:
+    - echo "Installing dependencies for unit-tests"
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
+    - npm install -y
 
+#Performing Continous Integration
+#Unit-Tests
+unit_testing:
+  needs: [dependencies] 
+  stage: unit-test
+  script:
+    - echo "Running unit tests on the application..."
+    - npm test
+
+#Building the image
+#Publish to GitLab Package Registry
 docker_build:
+  needs: [unit_testing]
   image: docker
   services:
     - docker:24.0.6-dind
@@ -28,10 +48,3 @@ docker_build:
         docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
         docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
       fi   
-
-include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
-  
-container_scanning:
-  variables:
-    GIT_STRATEGY: fetch
