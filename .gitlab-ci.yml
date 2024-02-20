@@ -1,7 +1,7 @@
 image: node:20.11.1-bullseye-slim
 stages:
   - build-the-image
-  - Security/Container-Scanning.gitlab-ci.yml
+  - container-scalling-image
 
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
