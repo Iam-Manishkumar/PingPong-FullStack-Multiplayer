@@ -1,4 +1,3 @@
-
 FROM node:20.11.1-bullseye-slim
 
 # Set working directory
