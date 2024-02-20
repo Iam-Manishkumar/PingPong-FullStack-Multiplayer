@@ -33,7 +33,8 @@ trivy_container_scanning:
 
   script:
   # Build image
-  - docker build -t $IMAGE .
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker build -t $CONTAINER_IMAGE .
   # Build report
   - ./trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@contrib/gitlab.tpl" -o gl-container-scanning-report.json $IMAGE
   # Print report
