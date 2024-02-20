@@ -2,6 +2,7 @@ image: node:20.11.1-bullseye-slim
 stages:
   - unit-test
   - build-the-image
+  - test
 
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -48,6 +49,7 @@ docker_build:
       fi   
 
 container_scanning:
+  stage: test
   image:
     name: docker.io/aquasec/trivy:latest
     entrypoint: [""]
