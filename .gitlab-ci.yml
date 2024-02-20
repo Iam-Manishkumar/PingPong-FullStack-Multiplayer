@@ -1,3 +1,38 @@
+image: node:20.11.1-bullseye-slim
+stages:
+
+  - build-the-image
+
+
+variables:
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  CLUSTER_NAME: mycluster
+
+services:
+  - docker:24.0.6-dind
+
+#Building the image
+#Publish to GitLab Package Registry
+docker_build:
+  needs: [unit_testing]
+  image: docker
+  services:
+    - docker:24.0.6-dind
+  stage: build-the-image
+  script:
+    - echo "Building Docker image..."
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CONTAINER_IMAGE .
+    - echo "Pushing the image to GitLab Package Registry"
+    - docker push $CONTAINER_IMAGE
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        echo "Tagging Docker image with Git tag..."
+        docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+        docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      fi   
+
+
 
 include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml
