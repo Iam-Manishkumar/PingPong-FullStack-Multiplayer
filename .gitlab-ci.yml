@@ -25,5 +25,5 @@ trivy:
   services:
     - docker:stable-dind
   script:
-    - ./trivy image --exit-code 0 --severity HIGH --no-progress --auto-refresh trivy-ci-test
-    - ./trivy image — exit-code 1 — severity CRITICAL — no-progress — auto-refresh trivy-ci-test  
+    - ./trivy image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG --exit-code 0 --severity HIGH --no-progress --auto-refresh trivy-ci-test
+    - ./trivy image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG —exit-code 1 — severity CRITICAL — no-progress — auto-refresh trivy-ci-test  
