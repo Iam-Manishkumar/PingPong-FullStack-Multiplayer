@@ -1,6 +1,6 @@
 variables:
   SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning/trivy:6
-  TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
+  TARGET_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
 
 image: docker:latest
 
