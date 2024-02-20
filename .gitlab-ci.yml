@@ -1,6 +1,5 @@
 image: node:20.11.1-bullseye-slim
 stages:
-  - dependencies
   - unit-test
   - build-the-image
 
@@ -11,10 +10,10 @@ variables:
 services:
   - docker:24.0.6-dind
 
-#Installation of dependencies
-Install-Dependency:
-  stage: dependencies
+dependencies:
+  stage: unit-test
   script:
+    - echo "Installing dependencies for unit-tests"
     - npm install supertest mocha --save-dev
     - npm install jsdom --save-dev
     - npm install -y
