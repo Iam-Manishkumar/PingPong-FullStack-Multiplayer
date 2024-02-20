@@ -18,7 +18,7 @@ trivy:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $CONTAINER_IMAGE . 
     - wget https://github.com/aquasecurity/trivy/releases/download/v0.49.1/trivy_0.49.1_Linux-64bit.tar.gz
-    - tar zxvf trivy_0.1.6_Linux-64bit.tar.gz
+    - tar zxvf trivy_0.49.1_Linux-64bit.tar.gz
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
