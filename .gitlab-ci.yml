@@ -1,3 +1,33 @@
+image: node:20.11.1-bullseye-slim
+stages:
+  - unit-test
+  - build-the-image
+  - test
+
+variables:
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  CLUSTER_NAME: mycluster
+
+services:
+  - docker:24.0.6-dind
+
+dependencies:
+  stage: unit-test
+  script:
+    - echo "Installing dependencies for unit-tests"
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
+    - npm install -y
+
+#Performing Continous Integration
+#Unit-Tests
+unit_testing:
+  needs: [dependencies] 
+  stage: unit-test
+  script:
+    - echo "Running unit tests on the application..."
+    - npm test
+
 include:
   - template: Jobs/Build.gitlab-ci.yml
   - template: Jobs/Container-Scanning.gitlab-ci.yml
