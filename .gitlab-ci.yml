@@ -17,4 +17,4 @@ owasp_dependency_check:
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/dependency-check-report.html
+      - target/dependency-check-report.html
