@@ -1,7 +1,10 @@
 image: node:20.11.1-bullseye-slim
 stages:
-
-  - tests
+  - unit-test
+  - filesystem-scan
+  - build
+  - test
+  - dependencycheck
 
 
 variables:
@@ -11,5 +14,47 @@ variables:
 services:
   - docker:24.0.6-dind
 
+unit-test-dependencies:
+  stage: unit-test
+  script:
+    - echo "Installing dependencies for unit-tests"
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
+    - npm install -y
+
+#Performing Continous Integration
+#Unit-Tests
+unit_testing:
+  needs: [unit-test-dependencies] 
+  stage: unit-test
+  script:
+    - echo "Running unit tests on the application..."
+    - npm test
+
+fs-scanning:
+  stage: filesystem-scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs .    
+
 include:
-  - remote: 'https://api.r2devops.io/api/r/gitlab/r2devops/hub/owasp_dependency_check@1.2.2.yaml'
+  - template: Jobs/Build.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
+
+
+dependencycheck:
+    stage: dependencycheck
+    image:
+        name: owasp/dependency-check
+        entrypoint: [""]
+#    before_script:
+#        - mkdir data
+#        - mkdir dependency-check
+    script:
+        - Dependency-Check -s . --nvdApiKey e043b5d6-0bdc-44f2-b335-2335ade6085a --failOnCVSS 7
