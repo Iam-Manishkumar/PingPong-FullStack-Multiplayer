@@ -11,7 +11,7 @@ services:
 owasp_dependency_check:
   stage: dependencycheck
   needs: []
-  image: registry.gitlab.com/acme/containers/owasp-dependency-check:latest
+  image: registry.gitlab.com/testman5880607/owasp:latest
   script:
     - mvn org.owasp:dependency-check-maven:check -DdataDirectory=/owasp -DfailBuildOnCVSS=8
   artifacts:
