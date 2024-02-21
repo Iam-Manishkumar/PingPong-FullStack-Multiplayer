@@ -1,21 +1,7 @@
-image: node:20.11.1-bullseye-slim
-stages:
-  #- build-the-image
-  - test
-
-variables:
-  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-  CLUSTER_NAME: mycluster
-  CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-
-services:
-  - docker:24.0.6-dind
-
-
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
-  
+  - template: Jobs/Build.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
 container_scanning:
   variables:
-    GIT_STRATEGY: fetch
-    CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
