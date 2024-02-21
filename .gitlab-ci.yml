@@ -6,18 +6,15 @@ stages:
 
 services:
   - docker:24.0.6-dind
-
-dependencycheck:
-    stage: dependencycheck
-    image:
-        name: owasp/dependency-check
-        entrypoint: [""]
-#    before_script:
-#        - mkdir data
-#        - mkdir dependency-check
-    script:
-        - /usr/share/dependency-check/bin/dependency-check.sh --project Test --out . --scan . --nvdApiKey e043b5d6-0bdc-44f2-b335-2335ade6085a --enableExperimental --failOnCVSS 7
-    artifacts:
-      paths:
-        - $CI_PROJECT_DIR/docs
     
+
+owasp_dependency_check:
+  stage: dependencycheck
+  needs: []
+  image: registry.gitlab.com/acme/containers/owasp-dependency-check:latest
+  script:
+    - mvn org.owasp:dependency-check-maven:check -DdataDirectory=/owasp -DfailBuildOnCVSS=8
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/dependency-check-report.html
