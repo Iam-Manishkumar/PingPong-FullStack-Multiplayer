@@ -13,6 +13,7 @@ owasp_dependency_check:
     entrypoint: [""]
   stage: test
   script:
+<<<<<<< HEAD
     # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 0 are found
     - >
       /usr/share/dependency-check/bin/dependency-check.sh --scan "./" --format ALL
@@ -24,3 +25,14 @@ owasp_dependency_check:
         # Save the HTML and JSON report artifacts
       - "./dependency-check-report.html"
       - "./dependency-check-report.json"
+=======
+    - trivy fs .    
+
+include:
+  - template: Jobs/Build.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
+>>>>>>> main
