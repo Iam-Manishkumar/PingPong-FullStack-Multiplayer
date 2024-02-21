@@ -35,3 +35,4 @@ include:
 container_scanning:
   variables:
     GIT_STRATEGY: fetch
+    CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
