@@ -41,7 +41,6 @@ filesystem:
   stage: test
   image:
     name: aquasec:/trivy:latest
-    entrypoint:
-      - []
+    entrypoint: []
   script:
     - trivy fs .
