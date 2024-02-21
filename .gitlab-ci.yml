@@ -1,7 +1,7 @@
 image: node:20.11.1-bullseye-slim
 stages:
 
-  - dependencycheck
+  - test
 
 
 services:
