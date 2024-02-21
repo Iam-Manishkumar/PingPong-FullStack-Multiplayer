@@ -4,12 +4,21 @@ stages:
   - dependencycheck
 
 
-variables:
-  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-  CLUSTER_NAME: mycluster
+fs-scanning:
+  stage: filesystem-scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs .    
 
-services:
-  - docker:24.0.6-dind
+include:
+  - template: Jobs/Build.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
 
 
 dependencycheck:
@@ -21,4 +30,4 @@ dependencycheck:
 #        - mkdir data
 #        - mkdir dependency-check
     script:
-        - Dependency-Check -s . --nvdApiKey e043b5d6-0bdc-44f2-b335-2335ade6085a --failOnCVSS 7
+        - /usr/share/dependency-check/bin/dependency-check.sh --project Test --out . --scan . NVD_API_KEY=e043b5d6-0bdc-44f2-b335-2335ade6085a --enableExperimental --failOnCVSS 7
