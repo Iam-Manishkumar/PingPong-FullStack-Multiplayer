@@ -13,7 +13,6 @@ owasp_dependency_check:
   needs: []
   image: registry.gitlab.com/testman5880607/owasp:latest
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - mvn org.owasp:dependency-check-maven:check -DdataDirectory=/owasp -DfailBuildOnCVSS=8
   artifacts:
     when: always
