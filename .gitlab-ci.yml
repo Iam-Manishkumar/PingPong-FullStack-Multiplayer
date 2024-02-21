@@ -1,19 +1,43 @@
 image: node:20.11.1-bullseye-slim
 stages:
-
+  - unit-test
+  - owasp-dependency
+  - filesystem-scan
+  - build
   - test
+  - build-the-image
 
+
+variables:
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  CLUSTER_NAME: mycluster
 
 services:
   - docker:24.0.6-dind
+
+unit-test-dependencies:
+  stage: unit-test
+  script:
+    - echo "Installing dependencies for unit-tests"
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
+    - npm install -y
+
+#Performing Continous Integration
+#Unit-Tests
+unit_testing:
+  needs: [unit-test-dependencies] 
+  stage: unit-test
+  script:
+    - echo "Running unit tests on the application..."
+    - npm test
 
 owasp_dependency_check:
   image:
     name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
     entrypoint: [""]
-  stage: test
+  stage: owasp-dependency
   script:
-<<<<<<< HEAD
     # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 0 are found
     - >
       /usr/share/dependency-check/bin/dependency-check.sh --scan "./" --format ALL
@@ -25,7 +49,14 @@ owasp_dependency_check:
         # Save the HTML and JSON report artifacts
       - "./dependency-check-report.html"
       - "./dependency-check-report.json"
-=======
+
+
+fs-scanning:
+  stage: filesystem-scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
     - trivy fs .    
 
 include:
@@ -35,4 +66,3 @@ include:
 container_scanning:
   variables:
     CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
->>>>>>> main
