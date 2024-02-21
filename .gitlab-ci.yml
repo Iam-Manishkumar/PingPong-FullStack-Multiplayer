@@ -2,8 +2,9 @@ image: node:20.11.1-bullseye-slim
 stages:
   - unit-test
   - build-the-image
-  - test
   - build
+  - test
+
 
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
