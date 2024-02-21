@@ -4,18 +4,6 @@ stages:
   - dependencycheck
 
 
-fs-scanning:
-  stage: filesystem-scan
-  image:
-    name: aquasec/trivy:latest
-    entrypoint: [""]
-  script:
-    - trivy fs .    
-
-include:
-  - template: Jobs/Build.gitlab-ci.yml
-  - template: Jobs/Container-Scanning.gitlab-ci.yml
-
 container_scanning:
   variables:
     CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
