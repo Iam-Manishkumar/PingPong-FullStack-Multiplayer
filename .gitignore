@@ -3,6 +3,7 @@
 
 ### Node ###
 # Logs
+.gitlab-ci copy.yml
 logs
 *.log
 npm-debug.log*

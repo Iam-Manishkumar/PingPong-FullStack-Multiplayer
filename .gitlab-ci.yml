@@ -2,7 +2,7 @@ image: node:20.11.1-bullseye-slim
 stages:
   - unit-test
   - build
-  - test
+  - testing
 
 
 variables:
@@ -12,7 +12,7 @@ variables:
 services:
   - docker:24.0.6-dind
 
-dependencies:
+unit-test-dependencies:
   stage: unit-test
   script:
     - echo "Installing dependencies for unit-tests"
@@ -23,7 +23,7 @@ dependencies:
 #Performing Continous Integration
 #Unit-Tests
 unit_testing:
-  needs: [dependencies] 
+  needs: [unit-test-dependencies] 
   stage: unit-test
   script:
     - echo "Running unit tests on the application..."
@@ -38,9 +38,9 @@ container_scanning:
     CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
 
 filesystem:
-  stage: test
+  stage: testing
   image:
-    name: aquasec:/trivy:latest
+    name: aquasec/trivy:latest
     entrypoint: []
   script:
     - trivy fs .
