@@ -6,7 +6,7 @@ stages:
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   CLUSTER_NAME: mycluster
-  CS_IMAGE: $CONTAINER_IMAGE:CI_COMMIT_SHORT_SHA
+
 
 services:
   - docker:24.0.6-dind
@@ -18,4 +18,4 @@ include:
 container_scanning:
   variables:
     GIT_STRATEGY: fetch
-    CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
