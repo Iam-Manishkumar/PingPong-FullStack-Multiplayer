@@ -2,6 +2,7 @@ image: node:20.11.1-bullseye-slim
 stages:
   - unit-test
   - build
+  - filesystem-scan
   - test
 
 
@@ -29,8 +30,8 @@ unit_testing:
     - echo "Running unit tests on the application..."
     - npm test
 
-filesystem-scan:
-  stage: test
+fs-scanning:
+  stage: filesystem-scan
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
