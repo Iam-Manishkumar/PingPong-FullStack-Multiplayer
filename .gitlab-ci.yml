@@ -16,4 +16,4 @@ dependencycheck:
 #        - mkdir data
 #        - mkdir dependency-check
     script:
-        - /usr/share/dependency-check/bin/dependency-check.sh --project Test --out . --scan . NVD_API_KEY=e043b5d6-0bdc-44f2-b335-2335ade6085a --enableExperimental --failOnCVSS 7
+        - /usr/share/dependency-check/bin/dependency-check.sh --project Test --out . --scan . --nvdApiKey e043b5d6-0bdc-44f2-b335-2335ade6085a --enableExperimental --failOnCVSS 7
