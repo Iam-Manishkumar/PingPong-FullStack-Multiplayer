@@ -11,7 +11,7 @@ services:
   - docker:24.0.6-dind
 
 # Publish to GitLab Package Registry
-# Dockerize
+# Dockerize#
 docker_build:
   image: docker
   services:
