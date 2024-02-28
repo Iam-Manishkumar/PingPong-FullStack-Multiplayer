@@ -3,6 +3,7 @@
 
 ### Node ###
 # Logs
+.DS_Store
 .gitlab-ci copy.yml
 logs
 *.log
