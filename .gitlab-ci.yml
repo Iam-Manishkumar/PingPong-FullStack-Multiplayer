@@ -8,14 +8,14 @@ variables:
   CLUSTER_NAME: mycluster 
 
 services:
-  - docker:24.0.6-dind
+  - docker:24.0.5
 
 # Publish to GitLab Package Registry
 # Dockerize
 docker_build:
   image: docker
   services:
-    - docker:24.0.6-dind
+    - docker:24.0.5
   stage: build
   script:
     - echo "Building Docker image..."
