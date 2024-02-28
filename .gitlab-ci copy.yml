@@ -124,3 +124,104 @@ include:
 container_scanning:
   variables:
     CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
+
+
+
+
+
+
+
+
+
+
+image: node:20.11.1-bullseye-slim
+stages:
+  - unit-test
+  - owasp-dependency
+  - filesystem-scan
+  - build
+  - test
+  - build-the-image
+  - deliver
+
+
+variables:
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  CLUSTER_NAME: mycluster
+
+services:
+  - docker:24.0.6-dind
+
+unit-test-dependencies:
+  stage: unit-test
+  script:
+    - echo "Installing dependencies for unit-tests"
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
+    - npm install -y
+
+#Performing Continous Integration
+#Unit-Tests
+unit_testing:
+  needs: [unit-test-dependencies] 
+  stage: unit-test
+  script:
+    - echo "Running unit tests on the application..."
+    - npm test
+
+owasp_dependency_check:
+  needs: [unit_testing]
+  image:
+    name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
+    entrypoint: [""]
+  stage: owasp-dependency
+  script:
+    # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 2 are found
+    - >
+      /usr/share/dependency-check/bin/dependency-check.sh --scan "./" --format ALL
+      --project "$CI_PROJECT_NAME" --failOnCVSS 1
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+        # Save the HTML and JSON report artifacts
+      - "./dependency-check-report.html"
+      - "./dependency-check-report.json"
+
+
+fs-scanning:
+  stage: filesystem-scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs .    
+
+include:
+  - template: Jobs/Build.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
+
+# CD Stage
+deploy_to_staging:
+  image: 
+    name: alpine/helm:3.12.3
+    entrypoint: [""]
+  stage: deliver
+  before_script:
+    - apk add --no-cache curl python3 py3-pip
+    - pip3 install awscli
+    - echo -n "$CI_JOB_TOKEN" | helm registry login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+
+  script:
+    - helm repo add gitlab-registry https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/helm/stable
+    - aws eks update-kubeconfig --region us-east-1 --name $CLUSTER_NAME
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        helm upgrade --install --set image.tag=$CI_COMMIT_TAG pingpong gitlab-registry/pingpong --namespace staging  
+      else
+        helm upgrade --install --set image.tag=$CI_COMMIT_SHORT_SHA pingpong gitlab-registry/pingpong --namespace staging  
+      fi
