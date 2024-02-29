@@ -33,7 +33,7 @@ Unit_Testing:
     - npm test
 
 Trivy-fs-scanning:
-  dependencies: Unit-Test
+  needs: [Unit_Testing]
   stage: OWASP-Trivy
   image:
     name: aquasec/trivy:latest
@@ -61,6 +61,7 @@ OWASP_dependency_check:
       - "./dependency-check-report.json"
 
 docker_build:
+  needs: [Unit_Testing, OWASP-Trivy]
   image: docker
   services:
     - docker:24.0.6-dind
