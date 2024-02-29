@@ -61,7 +61,7 @@ OWASP_dependency_check:
       - "./dependency-check-report.json"
 
 docker_build:
-  needs: [Unit_Testing, OWASP_dependency_check]
+  needs: [Unit_Testing, OWASP_dependency_check, Trivy-fs-scanning]
   image: docker
   services:
     - docker:24.0.6-dind
