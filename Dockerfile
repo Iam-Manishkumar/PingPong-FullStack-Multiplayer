@@ -20,7 +20,7 @@ RUN npm install -y
 COPY --chown=node:node . /project
 
 # Expose port 80 (assuming your application listens on port 80)
-EXPOSE 80
+EXPOSE 3000
 
 # Define the command to run your application
 USER node
