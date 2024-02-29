@@ -5,7 +5,6 @@ stages:
   - filesystem-scan
   - build
   - test
-  - build-the-image
   - deliver
 
 
