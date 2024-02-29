@@ -1,8 +1,7 @@
 image: node:20.11.1-bullseye-slim
 stages:
   - unit-test
-  - owasp-dependency
-  - filesystem-scan
+  - OWASP-Trivy
   - build
   - test
   - deliver
@@ -33,12 +32,12 @@ unit_testing:
     - echo "Running unit tests on the application..."
     - npm test
 
-owasp_dependency_check:
+OWASP_dependency_check:
   needs: [unit_testing]
   image:
     name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
     entrypoint: [""]
-  stage: owasp-dependency
+  stage: OWASP-Trivy
   script:
     # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 2 are found
     - >
@@ -52,8 +51,8 @@ owasp_dependency_check:
       - "./dependency-check-report.html"
       - "./dependency-check-report.json"
 
-fs-scanning:
-  stage: filesystem-scan
+Trivy-fs-scanning:
+  stage: OWASP-Trivy
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
