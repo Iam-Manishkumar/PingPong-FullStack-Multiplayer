@@ -24,7 +24,7 @@ describe('Ping Pong Game', () => {
 
   describe('Socket Connection', () => {
     it('should connect to the socket server', (done) => {
-      const socket = require('socket.io-client')('http://localhost:80'); // Adjust the URL if needed
+      const socket = require('socket.io-client')('http://localhost:3000'); // Adjust the URL if needed
 
       socket.on('connect', () => {
         assert.strictEqual(socket.connected, true);
