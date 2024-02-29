@@ -32,6 +32,14 @@ Unit_Testing:
     - echo "Running unit tests on the application..."
     - npm test
 
+Trivy-fs-scanning:
+  stage: OWASP-Trivy
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs . 
+
 OWASP_dependency_check:
   needs: [Unit_Testing]
   image:
@@ -50,16 +58,6 @@ OWASP_dependency_check:
         # Save the HTML and JSON report artifacts
       - "./dependency-check-report.html"
       - "./dependency-check-report.json"
-
-Trivy-fs-scanning:
-  stage: OWASP-Trivy
-  image:
-    name: aquasec/trivy:latest
-    entrypoint: [""]
-  script:
-    - trivy fs .    
-
-
 
 docker_build:
   image: docker
