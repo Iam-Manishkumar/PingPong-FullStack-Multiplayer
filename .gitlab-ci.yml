@@ -33,7 +33,7 @@ Unit_Testing:
     - npm test
 
 Trivy-fs-scanning:
-  needs: [Unit_Testing]
+  dependencies: Unit-Test
   stage: OWASP-Trivy
   image:
     name: aquasec/trivy:latest
