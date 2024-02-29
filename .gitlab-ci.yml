@@ -43,5 +43,5 @@ deploy_to_staging:
   script:
     - helm repo add gitlab-registry https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/helm/stable
     - aws eks update-kubeconfig --region eu-west-1 --name $CLUSTER_NAME
-    - helm upgrade --install --set image.tag=$CI_COMMIT_SHORT_SHA mynodejsapp gitlab-registry/nodejsapp-chart --namespace staging  
+    - helm upgrade --install --set image.tag=$CI_COMMIT_SHORT_SHA mynodejsapp gitlab-registry/nodejsapp-chart --namespace prod  
 
