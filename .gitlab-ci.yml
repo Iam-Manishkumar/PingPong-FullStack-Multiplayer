@@ -6,6 +6,7 @@ stages:
   - build
   - test
   - deliver
+  - deploy
 
 
 variables:
