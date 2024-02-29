@@ -17,6 +17,7 @@ services:
 
 
 
+
 docker_build:
   image: docker
   services:
@@ -36,7 +37,7 @@ docker_build:
 
 container_scanning:
   variables:
-    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
 
 include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml
