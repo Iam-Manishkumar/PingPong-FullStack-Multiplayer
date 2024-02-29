@@ -1,11 +1,11 @@
 image: node:20.11.1-bullseye-slim
 stages:
-  - unit-test
+  - Unit-Test
   - OWASP-Trivy
-  - build
-  - test
-  - deliver
-  - deploy
+  - Build
+  - Test
+  - Deliver
+  - Deploy
 
 
 variables:
@@ -15,8 +15,8 @@ variables:
 services:
   - docker:24.0.6-dind
 
-unit-test-dependencies:
-  stage: unit-test
+Unit-Test-Dependencies:
+  stage: Unit-Test
   script:
     - echo "Installing dependencies for unit-tests"
     - npm install supertest mocha --save-dev
@@ -25,15 +25,15 @@ unit-test-dependencies:
 
 #Performing Continous Integration
 #Unit-Tests
-unit_testing:
-  needs: [unit-test-dependencies] 
-  stage: unit-test
+Unit_Testing:
+  needs: [Unit-Test-Dependencies] 
+  stage: Unit-Test
   script:
     - echo "Running unit tests on the application..."
     - npm test
 
 OWASP_dependency_check:
-  needs: [unit_testing]
+  needs: [Unit_Testing]
   image:
     name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
     entrypoint: [""]
@@ -67,7 +67,7 @@ docker_build:
   image: docker
   services:
     - docker:24.0.6-dind
-  stage: build
+  stage: Build
   script:
     - echo "Building Docker image..."
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -88,7 +88,7 @@ deploy_to_staging:
   image: 
     name: alpine/helm:3.12.3
     entrypoint: [""]
-  stage: deliver
+  stage: Deliver
   before_script:
     - apk add --no-cache curl python3 py3-pip
     - pip3 install awscli
@@ -112,7 +112,7 @@ deploy_to_production:
   image:
     name: alpine/helm:3.12.3
     entrypoint: [""]
-  stage: deploy
+  stage: Deploy
   before_script:
     - apk add --no-cache curl python3 py3-pip
     - pip3 install awscli
