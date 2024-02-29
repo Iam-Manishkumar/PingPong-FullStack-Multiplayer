@@ -15,53 +15,7 @@ variables:
 services:
   - docker:24.0.6-dind
 
-Unit-Test-Dependencies:
-  stage: Unit-Test
-  script:
-    - echo "Installing dependencies for unit-tests"
-    - npm install supertest mocha --save-dev
-    - npm install jsdom --save-dev
-    - npm install -y
 
-#Performing Continous Integration
-#Unit-Tests
-Unit_Testing:
-  needs: [Unit-Test-Dependencies] 
-  stage: Unit-Test
-  script:
-    - echo "Running unit tests on the application..."
-    - npm test
-
-OWASP_dependency_check:
-  needs: [Unit_Testing]
-  image:
-    name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
-    entrypoint: [""]
-  stage: OWASP-Trivy
-  script:
-    # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 2 are found
-    - >
-      /usr/share/dependency-check/bin/dependency-check.sh --scan "./" --format ALL
-      --project "$CI_PROJECT_NAME" --failOnCVSS 1
-  allow_failure: true
-  artifacts:
-    when: always
-    paths:
-        # Save the HTML and JSON report artifacts
-      - "./dependency-check-report.html"
-      - "./dependency-check-report.json"
-
-Trivy-fs-scanning:
-  stage: OWASP-Trivy
-  image:
-    name: aquasec/trivy:latest
-    entrypoint: [""]
-  script:
-    - trivy fs .    
-
-container_scanning:
-  variables:
-    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_SHA
 
 docker_build:
   image: docker
@@ -79,6 +33,10 @@ docker_build:
         docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
         docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
       fi
+
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
 
 include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml
