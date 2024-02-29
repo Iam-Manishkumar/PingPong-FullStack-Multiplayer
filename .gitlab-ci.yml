@@ -1,7 +1,6 @@
 image: node:20.11.1-bullseye-slim
 stages:
-  - Unit-Test
-  - OWASP-Trivy
+  - Test-Scan
   - Build
   - test
   - Deliver
@@ -16,7 +15,7 @@ services:
   - docker:24.0.6-dind
 
 Unit-Test-Dependencies:
-  stage: Unit-Test
+  stage: Test-Scan
   script:
     - echo "Installing dependencies for unit-tests"
     - npm install supertest mocha --save-dev
@@ -27,14 +26,14 @@ Unit-Test-Dependencies:
 #Unit-Tests
 Unit_Testing:
   needs: [Unit-Test-Dependencies] 
-  stage: Unit-Test
+  stage: Test-Scan
   script:
     - echo "Running unit tests on the application..."
     - npm test
 
 Trivy-fs-scanning:
-  needs: [Unit_Testing]
-  stage: OWASP-Trivy
+  needs: []
+  stage: Test-Scan
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
@@ -42,11 +41,11 @@ Trivy-fs-scanning:
     - trivy fs . 
 
 OWASP_dependency_check:
-  needs: [Unit_Testing]
+  needs: []
   image:
     name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
     entrypoint: [""]
-  stage: OWASP-Trivy
+  stage: Test-Scan
   script:
     # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 2 are found
     - >
