@@ -133,7 +133,7 @@ Pushtag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 container_scanning:
-  needs: [Pushlatest, Pushtag]
+  needs: [Build]
   variables:
     CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
