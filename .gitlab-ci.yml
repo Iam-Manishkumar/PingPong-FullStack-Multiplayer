@@ -119,6 +119,7 @@ Pushlatest:
 # Finally, the goal here is to Docker tag any Git tag
 # GitLab will start a new pipeline everytime a Git tag is created, which is pretty awesome
 Pushtag:
+  needs: [Pushlatest]
   variables:
     # Again, we do not need the source code here. Just playing with Docker.
     GIT_STRATEGY: none
