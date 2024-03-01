@@ -4,6 +4,7 @@ stages:
   - Test-Scan
   - Build-Push
   - Push
+  - Tag
   - test
 
 services:
@@ -123,7 +124,7 @@ Pushtag:
   variables:
     # Again, we do not need the source code here. Just playing with Docker.
     GIT_STRATEGY: none
-  stage: Build-Push
+  stage: Tag
   only:
     # We want this job to be run on tags only.
     - tags
