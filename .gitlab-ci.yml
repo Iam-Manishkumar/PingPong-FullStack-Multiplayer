@@ -21,6 +21,7 @@ Unit-Test-Dependencies:
 #Performing Continous Integration
 #Unit-Tests
 Unit_Testing:
+  image: node:20.11.1-bullseye-slim
   needs: [Unit-Test-Dependencies] 
   stage: Test-Scan
   script:
