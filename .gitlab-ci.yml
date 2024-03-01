@@ -99,7 +99,7 @@ Build:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 # Here, the goal is to tag the "master" branch as "latest"
-Push_latest:
+Pushlatest:
   variables:
     # We are just playing with Docker here. 
     # We do not need GitLab to clone the source code.
@@ -119,7 +119,7 @@ Push_latest:
 
 # Finally, the goal here is to Docker tag any Git tag
 # GitLab will start a new pipeline everytime a Git tag is created, which is pretty awesome
-Push tag:
+Pushtag:
   variables:
     # Again, we do not need the source code here. Just playing with Docker.
     GIT_STRATEGY: none
@@ -133,7 +133,7 @@ Push tag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 container_scanning:
-  needs: [Push_latest]
+  needs: [Pushlatest, Pushtag]
   variables:
     CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
