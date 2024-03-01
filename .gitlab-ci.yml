@@ -2,7 +2,7 @@ image: docker:20
 
 stages:
   - Test-Scan
-  - Build
+  - Build-Push
   - Push
   - test
 
@@ -72,7 +72,8 @@ before_script:
   - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 
 Build:
-  stage: Build
+  stage: Build-Push
+  needs: [Unit_Testing]
   script:
     # fetches the latest image (not failing if image is not found)
     - docker pull $CI_REGISTRY_IMAGE:latest || true
@@ -102,7 +103,7 @@ Pushlatest:
     # We are just playing with Docker here. 
     # We do not need GitLab to clone the source code.
     GIT_STRATEGY: none
-  stage: Push
+  stage: Build-Push
   only:
     # Only "master" should be tagged "latest"
     - main
@@ -121,7 +122,7 @@ Pushtag:
   variables:
     # Again, we do not need the source code here. Just playing with Docker.
     GIT_STRATEGY: none
-  stage: Push
+  stage: Build-Push
   only:
     # We want this job to be run on tags only.
     - tags
@@ -131,6 +132,7 @@ Pushtag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 container_scanning:
+  needs: [Pushlatest]
   variables:
     CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
