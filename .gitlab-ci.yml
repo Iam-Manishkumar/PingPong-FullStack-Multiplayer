@@ -99,7 +99,7 @@ Build:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 # Here, the goal is to tag the "master" branch as "latest"
-Push latest:
+Push_latest:
   variables:
     # We are just playing with Docker here. 
     # We do not need GitLab to clone the source code.
@@ -133,7 +133,7 @@ Push tag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 container_scanning:
-  needs: [Push latest]
+  needs: [Push_latest]
   variables:
     CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
