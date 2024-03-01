@@ -75,7 +75,7 @@ before_script:
 
 Build:
   stage: Build-Push
-  needs: [Unit_Testing]
+  needs: [Unit_Testing, Trivy-fs-scanning, OWASP_dependency_check]
   script:
     # fetches the latest image (not failing if image is not found)
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY    
@@ -137,9 +137,9 @@ Push-tag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 container_scanning:
-  needs: [Unit_Testing, Trivy-fs-scanning, OWASP_dependency_check, Push-latest]
+  needs: [Push-latest]
   variables:
-    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    CS_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml    
