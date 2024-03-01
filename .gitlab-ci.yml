@@ -3,7 +3,7 @@ stages:
   - Build-Push
 
 variables:
-  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:latest
   CLUSTER_NAME: mycluster
 
 services:
