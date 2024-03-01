@@ -2,11 +2,9 @@ image: docker:20
 
 stages:
   - Test-Scan
-  - test
   - Build
   - Push
-  - Deliver
-  - Deploy
+  - test
 
 services:
   - docker:24.0.6-dind
