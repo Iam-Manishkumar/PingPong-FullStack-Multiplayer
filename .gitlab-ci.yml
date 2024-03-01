@@ -102,6 +102,7 @@ Build:
 
 # Here, the goal is to tag the "master" branch as "latest"
 Pushlatest:
+  needs: [Build]
   variables:
     # We are just playing with Docker here. 
     # We do not need GitLab to clone the source code.
