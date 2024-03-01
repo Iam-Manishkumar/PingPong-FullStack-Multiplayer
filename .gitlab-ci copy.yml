@@ -1,4 +1,4 @@
-image: node:20.11.1-bullseye-slim
+image: docker:20
 stages:
   - Test-Scan
   - Build
