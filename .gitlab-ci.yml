@@ -10,6 +10,7 @@ services:
   - docker:24.0.6-dind
 
 Unit-Test-Dependencies:
+  image: node:20.11.1-bullseye-slim
   stage: Test-Scan
   script:
     - echo "Installing dependencies for unit-tests"
