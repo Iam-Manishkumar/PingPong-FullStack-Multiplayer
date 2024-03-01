@@ -123,7 +123,7 @@ Push tag:
   variables:
     # Again, we do not need the source code here. Just playing with Docker.
     GIT_STRATEGY: none
-  stage: push
+  stage: Push
   only:
     # We want this job to be run on tags only.
     - tags
