@@ -1,8 +1,60 @@
 image: docker:20
 
 stages:
-  - build
-  - push
+  - Test-Scan
+  - test
+  - Build
+  - Push
+  - Deliver
+  - Deploy
+
+services:
+  - docker:24.0.6-dind
+
+Unit-Test-Dependencies:
+  stage: Test-Scan
+  script:
+    - echo "Installing dependencies for unit-tests"
+    - npm install supertest mocha --save-dev
+    - npm install jsdom --save-dev
+    - npm install -y
+
+#Performing Continous Integration
+#Unit-Tests
+Unit_Testing:
+  needs: [Unit-Test-Dependencies] 
+  stage: Test-Scan
+  script:
+    - echo "Running unit tests on the application..."
+    - npm test
+
+Trivy-fs-scanning:
+  needs: []
+  stage: Test-Scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs . 
+
+OWASP_dependency_check:
+  needs: []
+  image:
+    name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
+    entrypoint: [""]
+  stage: Test-Scan
+  script:
+    # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 2 are found
+    - >
+      /usr/share/dependency-check/bin/dependency-check.sh --scan "./" --format ALL
+      --project "$CI_PROJECT_NAME" --failOnCVSS 1
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+        # Save the HTML and JSON report artifacts
+      - "./dependency-check-report.html"
+      - "./dependency-check-report.json"
 
 variables:
   # fill those if you have a proxy in your environment
@@ -10,8 +62,6 @@ variables:
   https_proxy: ""
   no_proxy: ""
 
-services:
-  - docker:24.0.6-dind
 
 # Use this if your GitLab runner does not use socket binding
 # services:
@@ -24,7 +74,7 @@ before_script:
   - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 
 Build:
-  stage: build
+  stage: Build
   script:
     # fetches the latest image (not failing if image is not found)
     - docker pull $CI_REGISTRY_IMAGE:latest || true
@@ -54,7 +104,7 @@ Push latest:
     # We are just playing with Docker here. 
     # We do not need GitLab to clone the source code.
     GIT_STRATEGY: none
-  stage: push
+  stage: Push
   only:
     # Only "master" should be tagged "latest"
     - main
@@ -81,3 +131,11 @@ Push tag:
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+container_scanning:
+  needs: [docker_build]
+  variables:
+    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+include:
+  - template: Jobs/Container-Scanning.gitlab-ci.yml    
