@@ -137,9 +137,9 @@ Push-tag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 container_scanning:
-  needs: [Push-latest]
+  needs: [Build]
   variables:
-    CS_IMAGE: $CI_REGISTRY_IMAGE:latest
+    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml    
